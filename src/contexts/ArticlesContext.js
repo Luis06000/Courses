@@ -15,13 +15,13 @@ export function ArticlesProvider({ children }) {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(articles));
   }, [articles]);
 
-  const addArticle = (article) => {
+  const addArticle = (articleData) => {
     const newArticle = {
-      ...article,
-      id: Date.now().toString(), // Génère un ID unique
-      createdAt: new Date().toISOString()
+      ...articleData,
+      id: Date.now().toString(),
+      quantite: 1 // Quantité par défaut
     };
-    setArticles(prevArticles => [...prevArticles, newArticle]);
+    setArticles([...articles, newArticle]);
   };
 
   const toggleArticle = (id) => {
@@ -50,13 +50,33 @@ export function ArticlesProvider({ children }) {
     );
   };
 
+  const toggleEnAttente = (id) => {
+    setArticles(articles.map(article => 
+      article.id === id 
+        ? { ...article, enAttente: !article.enAttente }
+        : article
+    ));
+  };
+
+  const updateQuantite = (id, delta) => {
+    setArticles(articles.map(article => {
+      if (article.id === id) {
+        const newQuantite = Math.max(1, article.quantite + delta); // Minimum 1
+        return { ...article, quantite: newQuantite };
+      }
+      return article;
+    }));
+  };
+
   return (
     <ArticlesContext.Provider value={{ 
       articles, 
       addArticle, 
       toggleArticle, 
       deleteArticle,
-      updateArticle 
+      updateArticle,
+      toggleEnAttente,
+      updateQuantite
     }}>
       {children}
     </ArticlesContext.Provider>

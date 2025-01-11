@@ -39,14 +39,33 @@ h1 {
 }
 
 @media (max-width: 480px) {
-  .liste-magasins form,
-  .checklist form {
+  .liste-magasins form {
     flex-direction: column;
     gap: 8px;
   }
 
-  .checklist form button {
-    height: 45px;
+  .checklist form {
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  form input {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  form button {
+    padding: 8px;
+    min-width: 40px;
+    font-size: 1.2rem;
+  }
+
+  form button span {
+    display: none;
+  }
+
+  form button::before {
+    content: '+';
   }
 }
 
@@ -76,10 +95,6 @@ button {
   white-space: nowrap;
 }
 
-button:hover {
-  background-color: #2980b9;
-}
-
 .magasin,
 .article-item {
   padding: 15px;
@@ -105,21 +120,9 @@ button:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.articles-non-achetes div,
-.articles-achetes div {
-  padding: 12px;
-  margin: 8px 0;
-  cursor: pointer;
-  background-color: white;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 1px solid #e0e0e0;
-}
-
 .articles-non-achetes div:hover,
 .articles-achetes div:hover {
   background-color: #f5f6fa;
-  transform: translateX(5px);
 }
 
 .articles-achetes div {
@@ -145,20 +148,38 @@ h2 {
 }
 
 .back-button {
-  background-color: #95a5a6;
-  margin-bottom: 20px;
+  background-color: #f8f9fa;
+  border: none;
+  color: #495057;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
 }
 
 .back-button:hover {
-  background-color: #7f8c8d;
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
 
-.back-button::before {
-  content: "←";
-  font-size: 1.2em;
+.back-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+  }
 }
 
 .article-item {
@@ -174,7 +195,6 @@ h2 {
 }
 
 .article-item:hover {
-  transform: translateX(5px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -358,5 +378,285 @@ h2 {
   .icon-check,
   .icon-times {
     font-size: 1rem;
+  }
+}
+
+/* Styles pour les articles en attente */
+.article-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.waiting-button {
+  padding: 0px 8px;
+  background-color: #f39c12;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.waiting-button:hover {
+  background-color: #d68910;
+}
+
+.en-attente {
+  background-color: #fff3e0;
+}
+
+.articles-en-attente {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f39c12;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.icon-clock {
+  font-size: 0.8rem;
+}
+
+.magasin-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.magasin-nom {
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .article-actions {
+    gap: 6px;
+  }
+  
+  .waiting-button,
+  .delete-button {
+    min-width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+}
+
+.articles-en-attente-section {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #fff3e0;
+  border-radius: 8px;
+}
+
+.waiting-button.active {
+  background-color: #e67e22;
+}
+
+.waiting-button.active:hover {
+  background-color: #d35400;
+}
+
+.en-attente {
+  background-color: #fff3e0;
+  border-left: 4px solid #f39c12;
+}
+
+.waiting-list-button {
+  width: 100%;
+  margin-bottom: 20px;
+  background-color: #f39c12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.waiting-list-button:hover {
+  background-color: #d68910;
+}
+
+.magasin-tag {
+  font-size: 0.75rem;
+  background-color: #f39c12;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: capitalize;
+  display: inline;
+  width: max-content;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.article-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 1;
+}
+
+.article-info span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty-message {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.article-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.article-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantite-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 15px;
+}
+
+@media (max-width: 480px) {
+  .quantite-controls {
+    gap: 4px;
+  }
+}
+
+.quantite-button {
+  background: none;
+  border: none;
+  color: #666;
+  padding: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 480px) {
+  .quantite-button {
+    min-width: 18px;
+    height: 18px;
+    padding: 2px;
+  }
+}
+
+.quantite-button:hover {
+  color: #333;
+}
+
+.quantite-display {
+  min-width: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+@media (max-width: 480px) {
+  .quantite-display {
+    min-width: 14px;
+    font-size: 0.8rem;
+  }
+}
+
+.article-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 480px) {
+  .article-actions {
+    gap: 6px;
+  }
+
+  .article-item {
+    padding: 10px;
+  }
+
+  .article-item span {
+    font-size: 0.9rem;
+  }
+
+  .waiting-button,
+  .delete-button {
+    min-width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+  }
+}
+
+form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+form input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+form button {
+  padding: 8px 24px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+form button:hover {
+  background-color: #1976d2;
+}
+
+@media (max-width: 480px) {
+  form {
+    gap: 6px;
+  }
+
+  form input {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  form button {
+    padding: 8px;
+    min-width: 40px;
+    font-size: 1.2rem;
+  }
+
+  form button span {
+    display: none;
+  }
+
+  form button::before {
+    content: '+';
   }
 }
