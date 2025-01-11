@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Redirection...</title>
-    <script type="text/javascript">
-      var pathSegments = window.location.pathname;
-      var redirectUrl = window.location.origin + '/snack.luisfds.com/?returnTo=' + encodeURIComponent(pathSegments);
-      window.location.replace(redirectUrl);
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+    <script>
+        window.location.href = "https://snack.luisfds.com";
     </script>
-  </head>
-  <body>
-  </body>
-</html> 
+</head>
+<body>
+    <h1>Page Not Found</h1>
+    <p>Redirecting to the homepage...</p>
+</body>
+</html>
