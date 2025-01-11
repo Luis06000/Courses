@@ -7,6 +7,14 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
+@media (max-width: 850px) {
+  .App {
+    max-width: 100%;
+    padding: 15px;
+    box-shadow: none;
+  }
+}
+
 h1 {
   color: #2c3e50;
   text-align: center;
@@ -16,11 +24,30 @@ h1 {
   padding-bottom: 10px;
 }
 
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+}
+
 .liste-magasins form,
 .checklist form {
   margin-bottom: 30px;
   display: flex;
   gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .liste-magasins form,
+  .checklist form {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .checklist form button {
+    height: 45px;
+  }
 }
 
 input {
@@ -46,13 +73,15 @@ button {
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 button:hover {
   background-color: #2980b9;
 }
 
-.magasin {
+.magasin,
+.article-item {
   padding: 15px;
   margin: 10px 0;
   background-color: white;
@@ -60,6 +89,14 @@ button:hover {
   cursor: pointer;
   transition: all 0.3s ease;
   border: 1px solid #e0e0e0;
+}
+
+@media (max-width: 480px) {
+  .magasin,
+  .article-item {
+    padding: 12px;
+    margin: 8px 0;
+  }
 }
 
 .magasin:hover {
@@ -172,6 +209,17 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .article-content {
+    gap: 8px;
+  }
+
+  .article-content span {
+    font-size: 0.95rem;
+  }
 }
 
 .status-icon {
@@ -187,4 +235,128 @@ h2 {
 .icon-times {
   color: #e74c3c;
   font-size: 1.2rem;
+}
+
+.tools-page {
+  padding: 20px;
+}
+
+@media (max-width: 480px) {
+  .tools-page {
+    padding: 15px;
+  }
+}
+
+.debug-section {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.data-display {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+.data-display pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.data-display h3 {
+  color: #3498db;
+  margin-top: 0;
+}
+
+.delete-button {
+  padding: 0px 8px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 8px;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+@media (max-width: 480px) {
+  .delete-button {
+    min-width: 22px;
+    height: 22px;
+    font-size: 14px;
+  }
+}
+
+.back-button {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+}
+
+.articles-non-achetes,
+.articles-achetes {
+  margin: 20px 0;
+}
+
+@media (max-width: 480px) {
+  .articles-non-achetes,
+  .articles-achetes {
+    margin: 15px 0;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    margin: 20px 0 10px 0;
+  }
+}
+
+.reset-button {
+  margin-top: 30px;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .reset-button {
+    margin-top: 20px;
+    padding: 10px;
+  }
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+}
+
+.icon-check,
+.icon-times {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 480px) {
+  .icon-check,
+  .icon-times {
+    font-size: 1rem;
+  }
 }

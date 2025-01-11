@@ -13,9 +13,9 @@ function ListeMagasins() {
   const navigate = useNavigate();
 
   const isListeComplete = (magasinId) => {
-    const articlesduMagasin = articles.filter(article => article.magasin === magasinId);
+    const articlesduMagasin = articles.filter(article => article.magasinId === magasinId);
     if (articlesduMagasin.length === 0) return true;
-    return articlesduMagasin.every(article => article.achete);
+    return articlesduMagasin.every(article => article.achete === true);
   };
 
   const handleMagasinClick = (id) => {

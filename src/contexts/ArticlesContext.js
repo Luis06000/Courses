@@ -1,28 +1,63 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ArticlesContext = createContext();
+const LOCAL_STORAGE_KEY = 'shopping_list_articles';
 
 export function ArticlesProvider({ children }) {
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState(() => {
+    // Charger les articles depuis le localStorage au démarrage
+    const savedArticles = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return savedArticles ? JSON.parse(savedArticles) : [];
+  });
+
+  // Sauvegarder dans le localStorage à chaque changement
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(articles));
+  }, [articles]);
 
   const addArticle = (article) => {
-    setArticles([...articles, article]);
+    const newArticle = {
+      ...article,
+      id: Date.now().toString(), // Génère un ID unique
+      createdAt: new Date().toISOString()
+    };
+    setArticles(prevArticles => [...prevArticles, newArticle]);
   };
 
   const toggleArticle = (id) => {
-    setArticles(articles.map(article => 
-      article.id === id 
-        ? { ...article, achete: !article.achete }
-        : article
-    ));
+    setArticles(prevArticles => 
+      prevArticles.map(article => 
+        article.id === id 
+          ? { ...article, achete: !article.achete }
+          : article
+      )
+    );
   };
 
   const deleteArticle = (id) => {
-    setArticles(articles.filter(article => article.id !== id));
+    setArticles(prevArticles => 
+      prevArticles.filter(article => article.id !== id)
+    );
+  };
+
+  const updateArticle = (id, updates) => {
+    setArticles(prevArticles =>
+      prevArticles.map(article =>
+        article.id === id
+          ? { ...article, ...updates }
+          : article
+      )
+    );
   };
 
   return (
-    <ArticlesContext.Provider value={{ articles, addArticle, toggleArticle, deleteArticle }}>
+    <ArticlesContext.Provider value={{ 
+      articles, 
+      addArticle, 
+      toggleArticle, 
+      deleteArticle,
+      updateArticle 
+    }}>
       {children}
     </ArticlesContext.Provider>
   );
