@@ -10,7 +10,6 @@ function Checklist() {
   
   const { articles, addArticle, toggleArticle, deleteArticle, toggleEnAttente, updateQuantite } = useArticles();
   
-  // Filtrer pour n'avoir que les articles actifs (pas en attente)
   const articlesduMagasin = articles.filter(article => 
     article.magasinId === magasinId && !article.enAttente
   );
@@ -49,9 +48,7 @@ function Checklist() {
           onChange={(e) => setNouvelArticle(e.target.value)}
           placeholder="Ajouter un article..."
         />
-        <button type="submit">
-          <span>Ajouter</span>
-        </button>
+        <button type="submit"><span>Ajouter</span></button>
       </form>
 
       <div className="articles-non-achetes">

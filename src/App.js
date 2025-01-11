@@ -9,7 +9,7 @@ import { ArticlesProvider } from './contexts/ArticlesContext';
 function App() {
   return (
     <ArticlesProvider>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <div className="App">
           <h1>Mes courses</h1>
           <Routes>
