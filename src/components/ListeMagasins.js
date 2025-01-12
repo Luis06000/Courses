@@ -9,7 +9,8 @@ function ListeMagasins() {
     { id: 'carrefour', nom: 'Carrefour' },
     { id: 'metro', nom: 'Metro' },
     { id: 'italie', nom: 'Italie' },
-    { id: 'somedial', nom: 'Somedial' }
+    { id: 'somedial', nom: 'Somedial' },
+    { id: 'coulaud', nom: 'Coulaud' }
   ];
   const navigate = useNavigate();
 
