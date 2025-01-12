@@ -8,7 +8,8 @@ function ListeMagasins() {
   const magasins = [
     { id: 'carrefour', nom: 'Carrefour' },
     { id: 'metro', nom: 'Metro' },
-    { id: 'italie', nom: 'Italie' }
+    { id: 'italie', nom: 'Italie' },
+    { id: 'somedial', nom: 'Somedial' }
   ];
   const navigate = useNavigate();
 

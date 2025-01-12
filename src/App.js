@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ListeMagasins from './components/ListeMagasins';
 import Checklist from './components/Checklist';
 import ListeAttente from './components/ListeAttente';
+import Favoris from './components/Favoris';
 import './App.css';
 import { ArticlesProvider } from './contexts/ArticlesContext';
 
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<ListeMagasins />} />
             <Route path="/magasin/:id" element={<Checklist />} />
             <Route path="/en-attente" element={<ListeAttente />} />
+            <Route path="/favoris/:magasinId" element={<Favoris />} />
           </Routes>
         </div>
       </Router>
