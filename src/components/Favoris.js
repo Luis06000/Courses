@@ -8,7 +8,8 @@ const CATEGORIES = [
   'Frais',
   'Boissons',
   'Fruits/Légumes',
-  'Bonbons'
+  'Bonbons',
+  'Autres'
 ];
 
 function Favoris() {
