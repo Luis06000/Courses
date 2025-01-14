@@ -64,7 +64,7 @@ h1 {
     display: none;
   }
 
-  form button:not(.favorite-add-button)::before {
+  form button:not(.favorite-add-button, .submit-button)::before {
     content: '+';
   }
 }
@@ -599,10 +599,6 @@ form button {
 
   form button span {
     display: none;
-  }
-
-  form button:not(.favorite-add-button)::before {
-    content: '+';
   }
 }
 
