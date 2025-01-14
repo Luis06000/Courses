@@ -1,22 +1,21 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { getStorage } from 'firebase/storage'; // Importez Firebase Storage
+import { getStorage } from 'firebase/storage';
 
-// Votre configuration Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDspqkmmGAFx6PSQ9Ncfki2GuFVTr4FPY0",
-    authDomain: "courses-8b8ae.firebaseapp.com",
-    projectId: "courses-8b8ae",
-    storageBucket: "courses-8b8ae.firebasestorage.app",
-    messagingSenderId: "355474881588",
-    appId: "1:355474881588:web:17f9079424c09a4bdb9e61",
-    measurementId: "G-W1Z1379J6L"
-  };
+  apiKey: "AIzaSyBAKrUFmzC0ALcO09_ieNYglbI-D9sUg2c",
+  authDomain: "courses-c4841.firebaseapp.com",
+  projectId: "courses-c4841",
+  storageBucket: "courses-c4841.firebasestorage.app",
+  messagingSenderId: "996397019168",
+  appId: "1:996397019168:web:c74690bbe64bf276528c45",
+  measurementId: "G-ZC4WFJPBXK"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const storage = getStorage(app); // Initialisez Firebase Storage
+const storage = getStorage(app);
 
 export { db, auth, storage };
