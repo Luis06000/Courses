@@ -1,111 +1,171 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { db, auth } from '../firebase';
+import { 
+  collection, 
+  addDoc, 
+  deleteDoc, 
+  updateDoc, 
+  doc, 
+  query, 
+  where, 
+  getDocs,
+  onSnapshot
+} from 'firebase/firestore';
 
 const ArticlesContext = createContext();
-const LOCAL_STORAGE_KEY = 'shopping_list_articles';
-const FAVORIS_STORAGE_KEY = 'shopping_list_favoris';
 
 export function ArticlesProvider({ children }) {
-  const [articles, setArticles] = useState(() => {
-    const savedArticles = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return savedArticles ? JSON.parse(savedArticles) : [];
-  });
+  const [articles, setArticles] = useState([]);
+  const [favoris, setFavoris] = useState([]);
 
-  const [favoris, setFavoris] = useState(() => {
-    const savedFavoris = localStorage.getItem(FAVORIS_STORAGE_KEY);
-    return savedFavoris ? JSON.parse(savedFavoris) : [];
-  });
-
+  // Charger les articles et favoris de l'utilisateur
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(articles));
-  }, [articles]);
+    if (!auth.currentUser) return;
 
-  useEffect(() => {
-    localStorage.setItem(FAVORIS_STORAGE_KEY, JSON.stringify(favoris));
-  }, [favoris]);
-
-  const addArticle = (articleData) => {
-    // Vérifier si l'article existe déjà
-    const existingArticle = articles.find(
-      article => 
-        article.magasinId === articleData.magasinId && 
-        article.nom.toLowerCase() === articleData.nom.toLowerCase()
+    // Observer pour les articles
+    const articlesQuery = query(
+      collection(db, 'articles'),
+      where('userId', '==', auth.currentUser.uid)
     );
 
-    if (existingArticle) {
-      // Si l'article existe, mettre à jour sa quantité
-      setArticles(articles.map(article => 
-        article.id === existingArticle.id
-          ? { ...article, quantite: article.quantite + (articleData.quantite || 1) }
-          : article
-      ));
-    } else {
-      // Si l'article n'existe pas, l'ajouter avec sa quantité
-      const newArticle = {
-        ...articleData,
-        id: Date.now().toString(),
-        quantite: articleData.quantite || 1
-      };
-      setArticles([...articles, newArticle]);
+    const unsubscribeArticles = onSnapshot(articlesQuery, (snapshot) => {
+      const articlesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setArticles(articlesData);
+    });
+
+    // Observer pour les favoris
+    const favorisQuery = query(
+      collection(db, 'favoris'),
+      where('userId', '==', auth.currentUser.uid)
+    );
+
+    const unsubscribeFavoris = onSnapshot(favorisQuery, (snapshot) => {
+      const favorisData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setFavoris(favorisData);
+    });
+
+    return () => {
+      unsubscribeArticles();
+      unsubscribeFavoris();
+    };
+  }, []);
+
+  const addArticle = async (articleData) => {
+    if (!auth.currentUser) return;
+
+    try {
+      // Vérifier si l'article existe déjà
+      const articlesRef = collection(db, 'articles');
+      const q = query(
+        articlesRef,
+        where('userId', '==', auth.currentUser.uid),
+        where('magasinId', '==', articleData.magasinId),
+        where('nom', '==', articleData.nom)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        // Mettre à jour la quantité si l'article existe
+        const existingDoc = querySnapshot.docs[0];
+        const newQuantite = existingDoc.data().quantite + (articleData.quantite || 1);
+        await updateDoc(doc(db, 'articles', existingDoc.id), {
+          quantite: newQuantite
+        });
+      } else {
+        // Ajouter un nouvel article
+        await addDoc(collection(db, 'articles'), {
+          ...articleData,
+          userId: auth.currentUser.uid,
+          quantite: articleData.quantite || 1,
+          dateCreation: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de l\'article:', error);
     }
   };
 
-  const ajouterAuxFavoris = (articleData) => {
-    const { nom, categorie, magasinId } = articleData;
-    const newFavori = {
-      id: Date.now().toString(),
-      nom,
-      categorie: categorie || 'Non classé',
-      magasinId
-    };
-    setFavoris(prevFavoris => [...prevFavoris, newFavori]);
+  const ajouterAuxFavoris = async (articleData) => {
+    if (!auth.currentUser) return;
+
+    try {
+      await addDoc(collection(db, 'favoris'), {
+        ...articleData,
+        userId: auth.currentUser.uid,
+        dateCreation: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout aux favoris:', error);
+    }
   };
 
-  const supprimerDesFavoris = (id) => {
-    setFavoris(prevFavoris => prevFavoris.filter(favori => favori.id !== id));
+  const supprimerDesFavoris = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'favoris', id));
+    } catch (error) {
+      console.error('Erreur lors de la suppression du favori:', error);
+    }
   };
 
-  const toggleArticle = (id) => {
-    setArticles(prevArticles => 
-      prevArticles.map(article => 
-        article.id === id 
-          ? { ...article, achete: !article.achete }
+  const toggleArticle = async (id) => {
+    try {
+      const articleRef = doc(db, 'articles', id);
+      const article = articles.find(a => a.id === id);
+      await updateDoc(articleRef, {
+        achete: !article.achete
+      });
+    } catch (error) {
+      console.error('Erreur lors du toggle de l\'article:', error);
+    }
+  };
+
+  const deleteArticle = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'articles', id));
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'article:', error);
+    }
+  };
+
+  const toggleEnAttente = async (articleId) => {
+    try {
+      const articleRef = doc(db, 'articles', articleId);
+      const article = articles.find(a => a.id === articleId);
+      
+      // Mettre à jour dans Firebase
+      await updateDoc(articleRef, {
+        enAttente: !article.enAttente,
+        dateModification: new Date().toISOString()
+      });
+
+      // Mettre à jour le state local
+      setArticles(articles.map(article => 
+        article.id === articleId 
+          ? { ...article, enAttente: !article.enAttente }
           : article
-      )
-    );
+      ));
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du statut en attente:", error);
+    }
   };
 
-  const deleteArticle = (id) => {
-    setArticles(prevArticles => 
-      prevArticles.filter(article => article.id !== id)
-    );
-  };
-
-  const updateArticle = (id, updates) => {
-    setArticles(prevArticles =>
-      prevArticles.map(article =>
-        article.id === id
-          ? { ...article, ...updates }
-          : article
-      )
-    );
-  };
-
-  const toggleEnAttente = (id) => {
-    setArticles(articles.map(article => 
-      article.id === id 
-        ? { ...article, enAttente: !article.enAttente }
-        : article
-    ));
-  };
-
-  const updateQuantite = (id, delta) => {
-    setArticles(articles.map(article => {
-      if (article.id === id) {
-        const newQuantite = Math.max(1, article.quantite + delta);
-        return { ...article, quantite: newQuantite };
-      }
-      return article;
-    }));
+  const updateQuantite = async (id, delta) => {
+    try {
+      const article = articles.find(a => a.id === id);
+      const newQuantite = Math.max(1, article.quantite + delta);
+      await updateDoc(doc(db, 'articles', id), {
+        quantite: newQuantite
+      });
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de la quantité:', error);
+    }
   };
 
   return (
@@ -117,7 +177,6 @@ export function ArticlesProvider({ children }) {
       supprimerDesFavoris,
       toggleArticle, 
       deleteArticle,
-      updateArticle,
       toggleEnAttente,
       updateQuantite
     }}>

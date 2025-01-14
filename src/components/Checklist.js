@@ -70,6 +70,11 @@ function Checklist() {
     }
   };
 
+  const handleWaitingClick = (article, e) => {
+    e.stopPropagation();
+    toggleEnAttente(article.id);
+  };
+
   return (
     <div className="checklist">
       <div className="header-buttons">
@@ -159,12 +164,8 @@ function Checklist() {
                       </button>
                     </div>
                     <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleEnAttente(article.id);
-                      }}
                       className="waiting-button"
-                      title="Mettre en attente"
+                      onClick={(e) => handleWaitingClick(article, e)}
                     >
                       <FaClock />
                     </button>
