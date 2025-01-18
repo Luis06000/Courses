@@ -28,6 +28,17 @@ function Checklist() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [filtreCategorie, setFiltreCategorie] = useState('Toutes');
+
+  const filtrerArticles = (articles) => {
+    if (filtreCategorie === 'Toutes') {
+      return articles;
+    }
+    return articles.filter(article => article.categorie === filtreCategorie);
+  };
+
+  const articlesNonAchetesFiltres = filtrerArticles(articlesNonAchetes);
+  const articlesAchetesFiltres = filtrerArticles(articlesAchetes);
 
   const ajouterArticle = (e) => {
     e.preventDefault();
@@ -89,6 +100,21 @@ function Checklist() {
         </button>
       </div>
 
+      <div className="filtre-categories">
+        <select
+          value={filtreCategorie}
+          onChange={(e) => setFiltreCategorie(e.target.value)}
+          className="filtre-select"
+        >
+          <option value="Toutes">Toutes les catégories</option>
+          {CATEGORIES.map(categorie => (
+            <option key={categorie} value={categorie}>
+              {categorie}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <form onSubmit={ajouterArticle}>
         <div className="form-group">
           <input
@@ -129,66 +155,114 @@ function Checklist() {
 
       <div className="articles-non-achetes">
         <h2>À acheter</h2>
-        {CATEGORIES.map(categorie => {
-          const articlesDeCategorie = articlesNonAchetes.filter(
-            article => article.categorie === categorie
-          );
-          
-          if (articlesDeCategorie.length === 0) return null;
-          
-          return (
-            <div key={categorie} className="categorie-section">
-              <h3>{categorie}</h3>
-              {articlesDeCategorie.map(article => (
-                <div 
-                  key={article.id}
-                  id={`article-${article.id}`}
-                  className="article-item"
-                  onClick={() => toggleArticle(article.id)}
-                >
-                  <span>{article.nom}</span>
-                  <div className="article-actions">
-                    <div className="quantite-controls" onClick={e => e.stopPropagation()}>
+        {filtreCategorie === 'Toutes' ? (
+          CATEGORIES.map(categorie => {
+            const articlesDeCategorie = articlesNonAchetes.filter(
+              article => article.categorie === categorie
+            );
+            
+            if (articlesDeCategorie.length === 0) return null;
+            
+            return (
+              <div key={categorie} className="categorie-section">
+                <h3>{categorie}</h3>
+                {articlesDeCategorie.map(article => (
+                  <div 
+                    key={article.id}
+                    id={`article-${article.id}`}
+                    className="article-item"
+                    onClick={() => toggleArticle(article.id)}
+                  >
+                    <span>{article.nom}</span>
+                    <div className="article-actions">
+                      <div className="quantite-controls" onClick={e => e.stopPropagation()}>
+                        <button 
+                          onClick={() => updateQuantite(article.id, -1)}
+                          className="quantite-button"
+                        >
+                          <FaMinus />
+                        </button>
+                        <span className="quantite-display">{article.quantite}</span>
+                        <button 
+                          onClick={() => updateQuantite(article.id, 1)}
+                          className="quantite-button"
+                        >
+                          <FaPlus />
+                        </button>
+                      </div>
                       <button 
-                        onClick={() => updateQuantite(article.id, -1)}
-                        className="quantite-button"
+                        className="waiting-button"
+                        onClick={(e) => handleWaitingClick(article, e)}
                       >
-                        <FaMinus />
+                        <FaClock />
                       </button>
-                      <span className="quantite-display">{article.quantite}</span>
                       <button 
-                        onClick={() => updateQuantite(article.id, 1)}
-                        className="quantite-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteArticle(article.id);
+                        }}
+                        className="delete-button"
                       >
-                        <FaPlus />
+                        ×
                       </button>
                     </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })
+        ) : (
+          <div className="categorie-section">
+            <h3>{filtreCategorie}</h3>
+            {articlesNonAchetesFiltres.map(article => (
+              <div 
+                key={article.id}
+                id={`article-${article.id}`}
+                className="article-item"
+                onClick={() => toggleArticle(article.id)}
+              >
+                <span>{article.nom}</span>
+                <div className="article-actions">
+                  <div className="quantite-controls" onClick={e => e.stopPropagation()}>
                     <button 
-                      className="waiting-button"
-                      onClick={(e) => handleWaitingClick(article, e)}
+                      onClick={() => updateQuantite(article.id, -1)}
+                      className="quantite-button"
                     >
-                      <FaClock />
+                      <FaMinus />
                     </button>
+                    <span className="quantite-display">{article.quantite}</span>
                     <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteArticle(article.id);
-                      }}
-                      className="delete-button"
+                      onClick={() => updateQuantite(article.id, 1)}
+                      className="quantite-button"
                     >
-                      ×
+                      <FaPlus />
                     </button>
                   </div>
+                  <button 
+                    className="waiting-button"
+                    onClick={(e) => handleWaitingClick(article, e)}
+                  >
+                    <FaClock />
+                  </button>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteArticle(article.id);
+                    }}
+                    className="delete-button"
+                  >
+                    ×
+                  </button>
                 </div>
-              ))}
-            </div>
-          );
-        })}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="articles-achetes">
         <h2>Déjà acheté</h2>
-        {articlesAchetes.map(article => (
+        {articlesAchetesFiltres.map(article => (
           <div 
             key={article.id} 
             className="article-item"
